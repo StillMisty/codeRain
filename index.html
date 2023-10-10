@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>codeRain</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        main{
+            background-color: #000;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        canvas{
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            z-index: -1;
+        }
+        h1{
+            margin-bottom: 32vh;
+            color: #fff;
+            font-size: 54px;
+            font-family: 'Consolas';
+            text-shadow: 0 0 10px #fff;
+            opacity: 0;
+            user-select: none;
+            animation: appread 1.5s 0.5s forwards;
+        }
+
+        @keyframes appread{
+            0%{
+                opacity: 0;
+                transform: translateX(-16px);
+            }
+            100%{
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <canvas></canvas>
+        <h1>Hello World!</h1>
+    </main>
+</body>
+</html>
+
+<script>
+const cvs=document.querySelector('canvas');
+
+const ctx=cvs.getContext('2d');
+const fontSize=20 * devicePixelRatio;
+
+// 初始化
+function init(charIndex){
+    cvs.width=window.innerWidth * devicePixelRatio;
+    cvs.height=window.innerHeight * devicePixelRatio;
+    ctx.font=`${fontSize}px "Consolas"`;
+    const columnCount=Math.floor(cvs.width / fontSize);
+}
+
+init();
+window.onresize=init;
+
+const columnCount=Math.floor(cvs.width / fontSize);
+let charIndex=new Array(columnCount).fill(0);
+
+// 获取随机字符
+function getRandomChar(){
+    const str='qwertyuiopasdfghjklzxcvbnm';
+    return str[Math.floor(Math.random() * str.length)];
+}
+
+function draw(){
+    ctx.fillStyle='rgba(0,0,0,0.1)';
+    ctx.fillRect(0,0,cvs.width,cvs.height);
+    ctx.fillStyle=`hsl(120,100%,${Math.random()*25 + 50}%)`;
+    ctx.textBaseline='top';
+    for(let i=0;i<columnCount;i++){
+        const text=getRandomChar();
+        const x=i*fontSize;
+        const y=charIndex[i]*fontSize;
+        ctx.fillText(text,x,y);
+        if(y>cvs.height && Math.random()>0.985){
+            charIndex[i]=0;
+        }else{
+            charIndex[i]++;
+        }
+    }
+}
+setInterval(draw,50);
+</script>
